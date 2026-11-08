@@ -1,0 +1,15 @@
+id: SEC-AUTH-002
+name: SSH Invalid User Enumeration
+description: Detects SSH authentication attempts targeting non-existent accounts indicating username harvesting or spray attacks.
+severity: Medium
+log_type: auth
+mitre:
+  tactic: Discovery
+  technique_id: T1087.001
+  technique_name: "Account Discovery: Local Account"
+detection:
+  type: threshold
+  action: invalid_user
+  threshold: 3
+  group_by: source_ip
+remediation: Implement geo-blocking or private VPN for SSH endpoints, configure fail2ban on invalid user regex, and audit exposed bastion hosts.

@@ -1,0 +1,15 @@
+id: SEC-WIN-002
+name: Windows Event 4625 Failed Logon Burst
+description: Identifies repeated failed Windows interactive or network logon attempts (Event ID 4625) indicating credential attacks.
+severity: High
+log_type: windows
+mitre:
+  tactic: Credential Access
+  technique_id: T1110
+  technique_name: "Brute Force"
+detection:
+  type: threshold
+  action: failed_login
+  threshold: 5
+  group_by: source_ip
+remediation: Configure account lockout thresholds in Group Policy, investigate source IP / workstation name, and monitor for lateral movement.

@@ -1,0 +1,20 @@
+id: SEC-WEB-001
+name: Web SQL Injection (SQLi)
+description: Detects SQL injection syntax in URI path or query parameters targeting backend relational database management systems.
+severity: Critical
+log_type: web
+mitre:
+  tactic: Initial Access
+  technique_id: T1190
+  technique_name: "Exploit Public-Facing Application"
+detection:
+  type: pattern
+  target_field: target
+  patterns:
+    - '(?i)(''|%27)\s*(OR|AND)\s*(''|%27)?\d+(''|%27)?\s*=\s*(''|%27)?\d+'
+    - '(?i)\bUNION\s+(?:ALL\s+)?SELECT\b'
+    - '(?i)\b(?:SLEEP|BENCHMARK)\s*\(\s*\d+\s*\)'
+    - '(?i)\bWAITFOR\s+DELAY\b'
+    - '(?i)\bINFORMATION_SCHEMA\b'
+    - '(?i)(?:--|#|/\*).{0,20}$'
+remediation: Implement parameterized queries / prepared statements (CWE-89), deploy Web Application Firewall (WAF), and enforce database least privilege.

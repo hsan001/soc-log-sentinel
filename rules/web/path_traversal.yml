@@ -1,0 +1,17 @@
+id: SEC-WEB-002
+name: Path Traversal & Local File Inclusion (LFI)
+description: Detects directory traversal sequences and attempts to access sensitive operating system configuration files.
+severity: High
+log_type: web
+mitre:
+  tactic: Discovery
+  technique_id: T1083
+  technique_name: "File and Directory Discovery"
+detection:
+  type: pattern
+  target_field: target
+  patterns:
+    - '(?i)(?:\.\./|\.\.\\|%2e%2e|%252e%252e){2,}'
+    - '(?i)/etc/(?:passwd|shadow|hosts)'
+    - '(?i)(?:win\.ini|boot\.ini|c:\\windows\\system32)'
+remediation: Sanitize file requests against an explicit whitelist of allowed paths, prevent user input in file system calls, and run web services in chroot or isolated containers.

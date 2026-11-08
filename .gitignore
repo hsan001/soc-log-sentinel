@@ -41,14 +41,23 @@ htmlcov/
 .tox/
 .nox/
 
-# Generated Reports
+# Generated Reports & Logs
 triage_report.md
 triage_report.json
+sentinel_report.md
+sentinel_report.json
+test_report.json
+report.json
+report.md
 *.log
+!samples/*.log
 !sample_logs/*.log
 
-# IDEs
+# IDE & OS files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+.DS_Store
+Thumbs.db

@@ -1,0 +1,19 @@
+id: SEC-WEB-005
+name: Cross-Site Scripting (XSS) Injection
+description: Detects HTML script tags, event handlers, and JavaScript protocol URI schemes in request payloads.
+severity: High
+log_type: web
+mitre:
+  tactic: Initial Access
+  technique_id: T1189
+  technique_name: "Drive-by Compromise"
+detection:
+  type: pattern
+  target_field: target
+  patterns:
+    - '(?i)<script[^>]*>'
+    - '(?i)javascript:\s*'
+    - '(?i)on(?:error|load|click|mouseover)\s*=\s*[''"][^''"]*'
+    - '(?i)<img[^>]+src\s*=\s*[''"]?x[''"]?'
+    - '(?i)<svg[^>]+onload'
+remediation: Apply context-aware output encoding (HTML, JavaScript, Attribute context), implement strict Content Security Policy (CSP), and set HttpOnly flags on session cookies.

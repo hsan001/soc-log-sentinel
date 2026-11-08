@@ -1,0 +1,17 @@
+id: SEC-WEB-003
+name: OS Command Injection (RCE)
+description: Identifies shell command chaining delimiters and OS binary invocations embedded inside web requests.
+severity: Critical
+log_type: web
+mitre:
+  tactic: Execution
+  technique_id: T1059.004
+  technique_name: "Command and Scripting Interpreter: Unix Shell"
+detection:
+  type: pattern
+  target_field: target
+  patterns:
+    - '(?i)(?:;|\||&&|`|\$\()\s*(?:cat|id|whoami|uname|pwd|curl|wget|nc|bash|sh|powershell)\b'
+    - '(?i)/bin/(?:sh|bash)'
+    - '(?i)\bcmd\.exe\b|\bpowershell(?:\.exe)?\b'
+remediation: Eliminate direct system shell execution from web applications, pass arguments as discrete parameterized vectors without shell=True, and apply strict egress network filtering.

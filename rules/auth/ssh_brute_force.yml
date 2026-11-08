@@ -1,0 +1,15 @@
+id: SEC-AUTH-001
+name: SSH Password Brute Force Attack
+description: Identifies repeated SSH authentication failures from a single IP address exceeding threshold.
+severity: High
+log_type: auth
+mitre:
+  tactic: Credential Access
+  technique_id: T1110.001
+  technique_name: "Brute Force: Password Guessing"
+detection:
+  type: threshold
+  action: failed_login
+  threshold: 5
+  group_by: source_ip
+remediation: Block the attacking IP with fail2ban or firewall rules, disable SSH password authentication, and enforce SSH keys with MFA.

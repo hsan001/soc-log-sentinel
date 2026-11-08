@@ -1,0 +1,15 @@
+id: SEC-AUTH-003
+name: Sudo Privilege Escalation & Auth Failure
+description: Detects repeated authentication failures using sudo or unauthorized administrative escalation attempts on Linux hosts.
+severity: High
+log_type: auth
+mitre:
+  tactic: Privilege Escalation
+  technique_id: T1548.003
+  technique_name: "Abuse Elevation Control Mechanism: Sudo and Sudo Caching"
+detection:
+  type: threshold
+  action: sudo_fail
+  threshold: 2
+  group_by: user
+remediation: Review sudoers configuration for overly permissive NOPASSWD entries, verify account legitimacy, and lock compromised user accounts.

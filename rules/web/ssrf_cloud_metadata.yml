@@ -1,0 +1,15 @@
+id: SEC-WEB-004
+name: Server-Side Request Forgery (SSRF) - Cloud Metadata
+description: Detects HTTP requests attempting to reach cloud Instance Metadata Services (IMDS) or loopback addresses.
+severity: Critical
+log_type: web
+mitre:
+  tactic: Initial Access
+  technique_id: T1190
+  technique_name: "Exploit Public-Facing Application"
+detection:
+  type: pattern
+  target_field: target
+  patterns:
+    - '(?i)(?:https?|gopher|dict|file)://(?:169\.254\.169\.254|metadata\.google\.internal|127\.0\.0\.1|localhost)'
+remediation: Require IMDSv2 with token hop limit set to 1, enforce egress firewalls on backend servers, and disable unused URI schemes.

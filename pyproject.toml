@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "soc-log-sentinel"
-version = "1.0.0"
-description = "A high-performance security log auditing CLI utility for detecting brute force attacks and OWASP Top 10 web injection signatures."
+version = "2.0.0"
+description = "Enterprise SOC log analysis & detection engineering toolkit with Sigma-inspired YAML rules and MITRE ATT&CK alignment."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
     { name = "Mohammad Hassan Jalal", email = "hsanjlallko@gmail.com" }
@@ -15,12 +15,13 @@ authors = [
 keywords = [
     "cybersecurity",
     "soc",
+    "detection-engineering",
     "log-analysis",
-    "owasp",
-    "brute-force",
-    "incident-response",
     "mitre-attack",
     "siem",
+    "incident-response",
+    "sigma-rules",
+    "threat-detection",
     "blue-team"
 ]
 classifiers = [
@@ -30,14 +31,16 @@ classifiers = [
     "Topic :: Security",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13"
 ]
 
-dependencies = []
+dependencies = [
+    "rich>=13.7.0",
+    "ruamel.yaml>=0.18.0"
+]
 
 [project.optional-dependencies]
 dev = [
@@ -45,4 +48,7 @@ dev = [
 ]
 
 [project.scripts]
-soc-log-sentinel = "src.cli:main"
+soc-log-sentinel = "sentinel.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sentinel*"]

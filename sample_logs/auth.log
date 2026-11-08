@@ -1,10 +1,17 @@
-Nov 05 10:14:02 soc-server sshd[2841]: Accepted publickey for mjalal from 192.168.1.50 port 51234 ssh2
-Nov 05 10:15:10 soc-server sshd[2855]: Failed password for invalid user admin from 192.168.1.105 port 42100 ssh2
-Nov 05 10:15:12 soc-server sshd[2857]: Failed password for invalid user root from 192.168.1.105 port 42102 ssh2
-Nov 05 10:15:15 soc-server sshd[2859]: Failed password for invalid user test from 192.168.1.105 port 42104 ssh2
-Nov 05 10:15:18 soc-server sshd[2861]: Failed password for invalid user guest from 192.168.1.105 port 42106 ssh2
-Nov 05 10:15:20 soc-server sshd[2863]: Failed password for invalid user oracle from 192.168.1.105 port 42108 ssh2
-Nov 05 10:15:23 soc-server sshd[2865]: Failed password for invalid user postgres from 192.168.1.105 port 42110 ssh2
-Nov 05 10:15:25 soc-server sshd[2867]: Failed password for invalid user deploy from 192.168.1.105 port 42112 ssh2
-Nov 05 10:18:40 soc-server sudo[2901]: pam_unix(sudo:auth): authentication failure; logname=mjalal uid=1000 euid=0 tty=/dev/pts/0 ruser=mjalal rhost= user=mjalal
-Nov 05 10:20:01 soc-server sshd[2950]: Accepted password for developer from 192.168.1.55 port 48992 ssh2
+Nov 08 14:10:01 web-prod-01 sshd[1024]: Accepted publickey for devops from 192.168.1.50 port 54322 ssh2: RSA SHA256:abc123def456
+Nov 08 14:11:15 web-prod-01 sshd[1050]: Failed password for invalid user admin from 192.168.1.105 port 41234 ssh2
+Nov 08 14:11:18 web-prod-01 sshd[1052]: Failed password for invalid user root from 192.168.1.105 port 41236 ssh2
+Nov 08 14:11:21 web-prod-01 sshd[1054]: Failed password for invalid user test from 192.168.1.105 port 41238 ssh2
+Nov 08 14:11:24 web-prod-01 sshd[1056]: Failed password for invalid user oracle from 192.168.1.105 port 41240 ssh2
+Nov 08 14:11:27 web-prod-01 sshd[1058]: Failed password for invalid user guest from 192.168.1.105 port 41242 ssh2
+Nov 08 14:11:30 web-prod-01 sshd[1060]: Failed password for invalid user deploy from 192.168.1.105 port 41244 ssh2
+Nov 08 14:11:33 web-prod-01 sshd[1062]: Failed password for invalid user postgres from 192.168.1.105 port 41246 ssh2
+Nov 08 14:12:00 web-prod-01 sshd[1070]: Failed password for invalid user support from 203.0.113.42 port 58912 ssh2
+Nov 08 14:12:03 web-prod-01 sshd[1072]: Failed password for invalid user admin from 203.0.113.42 port 58914 ssh2
+Nov 08 14:12:06 web-prod-01 sshd[1074]: Failed password for invalid user backup from 203.0.113.42 port 58916 ssh2
+Nov 08 14:12:09 web-prod-01 sshd[1076]: Failed password for invalid user administrator from 203.0.113.42 port 58918 ssh2
+Nov 08 14:12:12 web-prod-01 sshd[1078]: Failed password for invalid user testuser from 203.0.113.42 port 58920 ssh2
+Nov 08 14:15:20 web-prod-01 sudo[2040]: pam_unix(sudo:auth): authentication failure; logname=uid=1001 euid=0 tty=/dev/pts/1 ruser=intern rhost= user=intern
+Nov 08 14:15:25 web-prod-01 sudo[2042]: pam_unix(sudo:auth): authentication failure; logname=uid=1001 euid=0 tty=/dev/pts/1 ruser=intern rhost= user=intern
+Nov 08 14:15:30 web-prod-01 sudo[2044]: pam_unix(sudo:auth): authentication failure; logname=uid=1001 euid=0 tty=/dev/pts/1 ruser=intern rhost= user=intern
+Nov 08 14:20:00 web-prod-01 sshd[2100]: Accepted password for developer from 192.168.1.80 port 49120 ssh2

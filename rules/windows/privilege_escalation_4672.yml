@@ -1,0 +1,15 @@
+id: SEC-WIN-003
+name: Sensitive Privilege Assignment (Event 4672)
+description: Detects special administrative privileges assigned to newly authenticated logon sessions.
+severity: Medium
+log_type: windows
+mitre:
+  tactic: Privilege Escalation
+  technique_id: T1078
+  technique_name: "Valid Accounts"
+detection:
+  type: pattern
+  target_field: action
+  patterns:
+    - "(?i)privilege_assigned"
+remediation: Review accounts exercising SeDebugPrivilege or SeTcbPrivilege, ensure administrative actions align with approved change windows, and restrict domain admin accounts.
