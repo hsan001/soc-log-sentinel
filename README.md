@@ -1,4 +1,4 @@
-# 🛡️ SOC Log Sentinel (`soc-log-sentinel`)
+﻿# ðŸ›¡ï¸ SOC Log Sentinel (`soc-log-sentinel`)
 
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 
 ---
 
-## 📌 Executive Overview
+## ðŸ“Œ Executive Overview
 
 Security Operations Centers (SOCs) and Incident Response teams face overwhelming log volumes, alert fatigue, and heterogeneous log schemas across Linux, Web, and Windows infrastructure. **SOC Log Sentinel** provides an enterprise-grade, lightweight, and modular detection engineering pipeline designed to triage attacks rapidly without the overhead of heavy SIEM infrastructure:
 
@@ -23,32 +23,32 @@ Security Operations Centers (SOCs) and Incident Response teams face overwhelming
 
 ---
 
-## 🏗️ System Architecture & Workflow
+## ðŸ—ï¸ System Architecture & Workflow
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                             LOG INGESTION LAYER                             │
-│   Linux /var/log/auth.log   •   Apache/Nginx Access Logs   •   Windows Events  │
-└──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │
-                                       ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                     NORMALIZATION & PARSING (sentinel.parser)               │
-│      Auto Dialect Detection  •  URL Percent-Decoding  •  Field Normalization │
-└──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │
-                                       ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                 DETECTION & EVALUATION ENGINE (sentinel.engine)             │
-│   Sigma-Inspired YAML Rules (rules/)  •  Regex Pattern & Threshold Matcher   │
-│                 MITRE ATT&CK Tagging & Threat Actor Aggregation             │
-└──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │
-                                       ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         MULTI-CHANNEL REPORTING LAYER                       │
-│    Rich Terminal UI (Color Badges)  •  SIEM JSON Export  •  Markdown Triage │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                             LOG INGESTION LAYER                             â”‚
+â”‚   Linux /var/log/auth.log   â€¢   Apache/Nginx Access Logs   â€¢   Windows Events  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                                       â”‚
+                                       â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                     NORMALIZATION & PARSING (sentinel.parser)               â”‚
+â”‚      Auto Dialect Detection  â€¢  URL Percent-Decoding  â€¢  Field Normalization â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                                       â”‚
+                                       â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                 DETECTION & EVALUATION ENGINE (sentinel.engine)             â”‚
+â”‚   Sigma-Inspired YAML Rules (rules/)  â€¢  Regex Pattern & Threshold Matcher   â”‚
+â”‚                 MITRE ATT&CK Tagging & Threat Actor Aggregation             â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                                       â”‚
+                                       â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                         MULTI-CHANNEL REPORTING LAYER                       â”‚
+â”‚    Rich Terminal UI (Color Badges)  â€¢  SIEM JSON Export  â€¢  Markdown Triage â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### Ingestion & Correlation Flow (Mermaid)
@@ -101,51 +101,51 @@ flowchart TD
 
 ---
 
-## 📁 Modular Directory Layout
+## ðŸ“ Modular Directory Layout
 
 ```text
 soc-log-sentinel/
-├── sentinel/                   # Core Detection Engineering Package
-│   ├── __init__.py             # Package exports & version metadata (v2.0.0)
-│   ├── cli.py                  # CLI interface, argument parser & pipeline runner
-│   ├── parser.py               # Multi-source log parser (Auth, Web, Windows)
-│   ├── engine.py               # YAML rule loader & MITRE correlation engine
-│   └── report.py               # Rich terminal visualizer & SIEM JSON/MD exporter
-├── rules/                      # Declarative Detection Rules (Sigma-Inspired YAML)
-│   ├── auth/
-│   │   ├── ssh_brute_force.yml         # T1110.001 - Password Guessing
-│   │   ├── ssh_invalid_user.yml        # T1087.001 - Account Discovery
-│   │   └── sudo_privilege_abuse.yml    # T1548.003 - Sudo Privilege Abuse
-│   ├── web/
-│   │   ├── sqli_injection.yml          # T1190 - SQL Injection
-│   │   ├── path_traversal.yml          # T1083 - File & Directory Discovery
-│   │   ├── command_injection.yml       # T1059.004 - OS Command Execution (RCE)
-│   │   ├── ssrf_cloud_metadata.yml     # T1190 - IMDS Cloud SSRF
-│   │   └── xss_injection.yml           # T1189 - Cross-Site Scripting
-│   └── windows/
-│       ├── suspicious_powershell.yml   # T1059.001 - PowerShell Obfuscation
-│       ├── logon_brute_force.yml       # T1110 - Windows Event 4625 Burst
-│       └── privilege_escalation_4672.yml # T1078 - Sensitive Privilege Assignment
-├── samples/                    # Curated Threat Samples for Instant Evaluation
-│   ├── auth.log                # Linux SSH brute force & sudo failure events
-│   ├── access.log              # OWASP Top 10 Web injection attack payloads
-│   └── windows_security.log    # Windows Event 4625 failed logons & PowerShell RCE
-├── tests/                      # Enterprise Pytest Suite (100% Pass Rate)
-│   ├── test_cli.py             # CLI options, arguments, and exit code tests
-│   ├── test_engine.py          # Rule parsing, regex matching, and threshold logic
-│   ├── test_parser.py          # Multi-format parsing, decoding, and edge cases
-│   └── test_report.py          # Rich terminal rendering and JSON schema integrity
-├── .github/workflows/          # CI Automation
-│   └── ci.yml                  # Multi-version matrix test (Python 3.10 - 3.13)
-├── .gitignore                  # Production Git hygiene configuration
-├── LICENSE                     # MIT License
-├── pyproject.toml              # Modern PEP 517/621 packaging standard
-└── requirements.txt            # Runtime dependencies (rich, ruamel.yaml, pytest)
+â”œâ”€â”€ sentinel/                   # Core Detection Engineering Package
+â”‚   â”œâ”€â”€ __init__.py             # Package exports & version metadata (v2.0.0)
+â”‚   â”œâ”€â”€ cli.py                  # CLI interface, argument parser & pipeline runner
+â”‚   â”œâ”€â”€ parser.py               # Multi-source log parser (Auth, Web, Windows)
+â”‚   â”œâ”€â”€ engine.py               # YAML rule loader & MITRE correlation engine
+â”‚   â””â”€â”€ report.py               # Rich terminal visualizer & SIEM JSON/MD exporter
+â”œâ”€â”€ rules/                      # Declarative Detection Rules (Sigma-Inspired YAML)
+â”‚   â”œâ”€â”€ auth/
+â”‚   â”‚   â”œâ”€â”€ ssh_brute_force.yml         # T1110.001 - Password Guessing
+â”‚   â”‚   â”œâ”€â”€ ssh_invalid_user.yml        # T1087.001 - Account Discovery
+â”‚   â”‚   â””â”€â”€ sudo_privilege_abuse.yml    # T1548.003 - Sudo Privilege Abuse
+â”‚   â”œâ”€â”€ web/
+â”‚   â”‚   â”œâ”€â”€ sqli_injection.yml          # T1190 - SQL Injection
+â”‚   â”‚   â”œâ”€â”€ path_traversal.yml          # T1083 - File & Directory Discovery
+â”‚   â”‚   â”œâ”€â”€ command_injection.yml       # T1059.004 - OS Command Execution (RCE)
+â”‚   â”‚   â”œâ”€â”€ ssrf_cloud_metadata.yml     # T1190 - IMDS Cloud SSRF
+â”‚   â”‚   â””â”€â”€ xss_injection.yml           # T1189 - Cross-Site Scripting
+â”‚   â””â”€â”€ windows/
+â”‚       â”œâ”€â”€ suspicious_powershell.yml   # T1059.001 - PowerShell Obfuscation
+â”‚       â”œâ”€â”€ logon_brute_force.yml       # T1110 - Windows Event 4625 Burst
+â”‚       â””â”€â”€ privilege_escalation_4672.yml # T1078 - Sensitive Privilege Assignment
+â”œâ”€â”€ samples/                    # Curated Threat Samples for Instant Evaluation
+â”‚   â”œâ”€â”€ auth.log                # Linux SSH brute force & sudo failure events
+â”‚   â”œâ”€â”€ access.log              # OWASP Top 10 Web injection attack payloads
+â”‚   â””â”€â”€ windows_security.log    # Windows Event 4625 failed logons & PowerShell RCE
+â”œâ”€â”€ tests/                      # Enterprise Pytest Suite (100% Pass Rate)
+â”‚   â”œâ”€â”€ test_cli.py             # CLI options, arguments, and exit code tests
+â”‚   â”œâ”€â”€ test_engine.py          # Rule parsing, regex matching, and threshold logic
+â”‚   â”œâ”€â”€ test_parser.py          # Multi-format parsing, decoding, and edge cases
+â”‚   â””â”€â”€ test_report.py          # Rich terminal rendering and JSON schema integrity
+â”œâ”€â”€ .github/workflows/          # CI Automation
+â”‚   â””â”€â”€ ci.yml                  # Multi-version matrix test (Python 3.10 - 3.13)
+â”œâ”€â”€ .gitignore                  # Production Git hygiene configuration
+â”œâ”€â”€ LICENSE                     # MIT License
+â”œâ”€â”€ pyproject.toml              # Modern PEP 517/621 packaging standard
+â””â”€â”€ requirements.txt            # Runtime dependencies (rich, ruamel.yaml, pytest)
 ```
 
 ---
 
-## ⚡ Quickstart Guide
+## âš¡ Quickstart Guide
 
 ### 1. Installation
 
@@ -185,43 +185,43 @@ python -m sentinel.cli samples/auth.log --threshold 3 --export both -j report.js
 
 ---
 
-## 🖥️ Sample Terminal Output
+## ðŸ–¥ï¸ Sample Terminal Output
 
 When executed, **SOC Log Sentinel** generates an interactive `Rich` incident dashboard:
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 🛡️  SOC LOG SENTINEL v2.0.0 — Enterprise Detection & Incident Triage Engine │
-│ MITRE ATT&CK Aligned Detection Engineering Framework                        │
-└─────────────────────────────────────────────────────────────────────────────┘
-┌──────────────────────── EXECUTIVE INCIDENT SUMMARY ─────────────────────────┐
-│                                                                             │
-│    Log Sources Analyzed:   3 files (41 events)    Threat Severity:   Critical: 8  │
-│                                                                      High: 9      │
-│    Total Alerts Flagged:   18 incidents           Unique Attackers:  9 source IPs │
-│                                                                                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-                 🚨 DETECTED SECURITY INCIDENTS & THREAT VECTORS               
-┌──────────┬──────────────┬──────────────────────────┬──────────────────┬─────────────┬───────────────────────────────┬───────┐
-│ Alert ID │   Severity   │ Rule & Threat Vector     │ Source -> Target │ MITRE ATT&CK│ Observed Evidence / Payload   │  Hits │
-├──────────┼──────────────┼──────────────────────────┼──────────────────┼─────────────┼───────────────────────────────┼───────┤
-│ ALT-001  │   CRITICAL   │ Web SQL Injection (SQLi) │ 198.51.100.24    │ T1190       │ ' OR '1'='1                   │     1 │
-│          │              │                          │ -> /login.php    │ Exploit App │                               │       │
-├──────────┼──────────────┼──────────────────────────┼──────────────────┼─────────────┼───────────────────────────────┼───────┤
-│ ALT-002  │   CRITICAL   │ OS Command Injection     │ 45.33.32.156     │ T1059.004   │ ; cat /etc/passwd             │     1 │
-│          │              │                          │ -> /cgi-bin/ping │ Unix Shell  │                               │       │
-├──────────┼──────────────┼──────────────────────────┼──────────────────┼─────────────┼───────────────────────────────┼───────┤
-│ ALT-003  │   CRITICAL   │ Suspicious PowerShell    │ 10.0.0.45        │ T1059.001   │ -ExecutionPolicy Bypass -enc  │     1 │
-│          │              │ Obfuscation & Download   │ -> powershell.exe│ PowerShell  │                               │       │
-├──────────┼──────────────┼──────────────────────────┼──────────────────┼─────────────┼───────────────────────────────┼───────┤
-│ ALT-004  │     HIGH     │ SSH Password Brute Force │ 192.168.1.105    │ T1110.001   │ 7 failed attempts observed.   │     7 │
-│          │              │ Attack                   │ -> sshd          │ Passw Guess │                               │       │
-└──────────┴──────────────┴──────────────────────────┴──────────────────┴─────────────┴───────────────────────────────┴───────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ ðŸ›¡ï¸  SOC LOG SENTINEL v2.0.0 â€” Enterprise Detection & Incident Triage Engine â”‚
+â”‚ MITRE ATT&CK Aligned Detection Engineering Framework                        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ EXECUTIVE INCIDENT SUMMARY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                                                                             â”‚
+â”‚    Log Sources Analyzed:   3 files (41 events)    Threat Severity:   Critical: 8  â”‚
+â”‚                                                                      High: 9      â”‚
+â”‚    Total Alerts Flagged:   18 incidents           Unique Attackers:  9 source IPs â”‚
+â”‚                                                                                   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                 ðŸš¨ DETECTED SECURITY INCIDENTS & THREAT VECTORS               
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ Alert ID â”‚   Severity   â”‚ Rule & Threat Vector     â”‚ Source -> Target â”‚ MITRE ATT&CKâ”‚ Observed Evidence / Payload   â”‚  Hits â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ ALT-001  â”‚   CRITICAL   â”‚ Web SQL Injection (SQLi) â”‚ 198.51.100.24    â”‚ T1190       â”‚ ' OR '1'='1                   â”‚     1 â”‚
+â”‚          â”‚              â”‚                          â”‚ -> /login.php    â”‚ Exploit App â”‚                               â”‚       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ ALT-002  â”‚   CRITICAL   â”‚ OS Command Injection     â”‚ 45.33.32.156     â”‚ T1059.004   â”‚ ; cat /etc/passwd             â”‚     1 â”‚
+â”‚          â”‚              â”‚                          â”‚ -> /cgi-bin/ping â”‚ Unix Shell  â”‚                               â”‚       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ ALT-003  â”‚   CRITICAL   â”‚ Suspicious PowerShell    â”‚ 10.0.0.45        â”‚ T1059.001   â”‚ -ExecutionPolicy Bypass -enc  â”‚     1 â”‚
+â”‚          â”‚              â”‚ Obfuscation & Download   â”‚ -> powershell.exeâ”‚ PowerShell  â”‚                               â”‚       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ ALT-004  â”‚     HIGH     â”‚ SSH Password Brute Force â”‚ 192.168.1.105    â”‚ T1110.001   â”‚ 7 failed attempts observed.   â”‚     7 â”‚
+â”‚          â”‚              â”‚ Attack                   â”‚ -> sshd          â”‚ Passw Guess â”‚                               â”‚       â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
 
-## 🎯 MITRE ATT&CK Coverage Matrix
+## ðŸŽ¯ MITRE ATT&CK Coverage Matrix
 
 | Rule ID | Detection Rule Name | MITRE Tactic | Technique ID | Technique Name | Severity |
 |:---|:---|:---|:---:|:---|:---:|
@@ -239,7 +239,7 @@ When executed, **SOC Log Sentinel** generates an interactive `Rich` incident das
 
 ---
 
-## ✍️ Authoring Custom YAML Detection Rules
+## âœï¸ Authoring Custom YAML Detection Rules
 
 Adding new detection logic is as simple as dropping a `.yml` file into `rules/`:
 
@@ -263,7 +263,7 @@ remediation: Upgrade log4j dependencies to >=2.17.1 and set -Dlog4j2.formatMsgNo
 
 ---
 
-## 🧪 Testing & Verification
+## ðŸ§ª Testing & Verification
 
 The test suite validates parsing robustness, threshold boundary limits, regex pattern precision, and JSON schema compatibility:
 
@@ -294,7 +294,7 @@ tests/test_report.py::test_rich_terminal_rendering PASSED                [100%]
 
 ---
 
-## 🗺️ Engineering Roadmap
+## ðŸ—ºï¸ Engineering Roadmap
 
 - [x] **v2.0.0:** Modular Python architecture (`sentinel/`), Sigma YAML rules, Windows Event Log parsing, Rich terminal UI.
 - [ ] **v2.1.0:** Direct Splunk HTTP Event Collector (HEC) and Elasticsearch bulk ingestion forwarder.
@@ -303,7 +303,7 @@ tests/test_report.py::test_rich_terminal_rendering PASSED                [100%]
 
 ---
 
-## 👤 Author & License
+## ðŸ‘¤ Author & License
 
 - **Author:** Mohammad Hassan Jalal ([@hsan001](https://github.com/hsan001))
 - **Email:** hsanjlallko@gmail.com
