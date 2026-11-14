@@ -6,12 +6,9 @@ import os
 import tempfile
 import pytest
 from sentinel.parser import (
-    LogParser,
-    LogEntry,
     parse_auth_line,
     parse_web_line,
     parse_windows_line,
-    detect_and_parse_line,
     detect_log_format,
     parse_log_file
 )

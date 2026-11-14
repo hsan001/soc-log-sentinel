@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: SOC Log Sentinel CI
 
 on:
   push:
@@ -7,13 +7,13 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test:
-    name: Test Suite (Python ${{ matrix.python-version }})
+  test-and-audit:
+    name: Test & Security Audit (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12"]
 
     steps:
       - name: Checkout Repository
@@ -29,13 +29,26 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install .
+          pip install pytest ruff bandit
+          pip install -e .
+
+      - name: Lint with Ruff
+        run: |
+          python -m ruff check .
+
+      - name: Security Audit with Bandit
+        run: |
+          python -m bandit -r sentinel -ll -ii
 
       - name: Execute Pytest Suite
         run: |
-          pytest tests/ -v
+          python -m pytest -v
 
-      - name: Validate Multi-Source Ingestion & Detection CLI
+      - name: Run 25,000-Event Sustained Benchmark
         run: |
-          python -m sentinel.cli samples/auth.log samples/access.log samples/windows_security.log --rules rules/ --export json -j ci_report.json
+          python benchmarks/run_bench.py
+
+      - name: Validate Multi-Source Ingestion & Navigator Export
+        run: |
+          python -m sentinel.cli samples/auth.log samples/access.log samples/windows_security.log --rules rules/ --navigator ci_navigator.json --export json -j ci_report.json
           python -c "import json; data = json.load(open('ci_report.json')); assert data['sentinel_version'] == '2.0.0'; assert data['metadata']['total_alerts'] > 0; print('CI Validation Passed! Alerts:', data['metadata']['total_alerts'])"

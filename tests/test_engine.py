@@ -5,7 +5,7 @@ test_engine.py - Unit Tests for Detection Engine & MITRE ATT&CK Mapping
 import os
 import pytest
 from sentinel.parser import LogEntry
-from sentinel.engine import DetectionEngine, Rule, Alert
+from sentinel.engine import DetectionEngine
 
 
 @pytest.fixture

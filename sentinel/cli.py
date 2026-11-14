@@ -23,13 +23,13 @@ def resolve_default_rules_dir() -> str:
     # Check current directory
     if os.path.exists("rules") and os.path.isdir("rules"):
         return os.path.abspath("rules")
-    
+
     # Check sibling to package
     pkg_dir = os.path.dirname(os.path.abspath(__file__))
     parent_rules = os.path.join(os.path.dirname(pkg_dir), "rules")
     if os.path.exists(parent_rules) and os.path.isdir(parent_rules):
         return parent_rules
-        
+
     return "rules"
 
 
@@ -96,6 +96,12 @@ Examples:
         type=str,
         default=None,
         help="File path to save Markdown triage report"
+    )
+    parser.add_argument(
+        "--navigator",
+        type=str,
+        default=None,
+        help="File path to export MITRE ATT&CK Navigator layer JSON"
     )
     parser.add_argument(
         "-t", "--threshold",
@@ -182,6 +188,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         IncidentReporter.generate_markdown_report(alerts, metadata, file_path=md_path)
         if not args.quiet:
             console.print(f"[bold green]✔ Markdown triage report exported to:[/] [cyan]{md_path}[/]")
+
+    if args.navigator:
+        IncidentReporter.generate_navigator_layer(alerts, file_path=args.navigator)
+        if not args.quiet:
+            console.print(f"[bold green]✔ MITRE ATT&CK Navigator layer exported to:[/] [cyan]{args.navigator}[/]")
 
     return 0
 

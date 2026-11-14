@@ -50,7 +50,7 @@ def test_compile_metadata(sample_alert):
 def test_json_report_serialization(sample_alert):
     metadata = IncidentReporter.compile_metadata([sample_alert], ["test.log"], 50)
     json_output = IncidentReporter.generate_json_report([sample_alert], metadata)
-    
+
     data = json.loads(json_output)
     assert data["sentinel_version"] == "2.0.0"
     assert len(data["alerts"]) == 1

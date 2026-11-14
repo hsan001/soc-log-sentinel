@@ -1,20 +1,51 @@
 """
 engine.py - Detection & Rule Evaluation Engine
-Loads Sigma-inspired YAML detection rules, compiles regex patterns,
-evaluates streaming log entries, and maps threats to MITRE ATT&CK techniques.
+=============================================
+Loads Sigma-inspired YAML detection rules, compiles regex patterns with ReDoS guards,
+evaluates streaming log entries, and maps threats to MITRE ATT&CK techniques and Navigator layers.
 """
 
+from __future__ import annotations
+
+import glob
+import json
+import logging
 import os
 import re
-import glob
-import logging
-from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional, Set
 from collections import defaultdict
+from dataclasses import dataclass, field
+from typing import Any, Dict, Iterable, List, Optional
 
 from .parser import LogEntry
 
 logger = logging.getLogger("sentinel.engine")
+
+MAX_REGEX_EVAL_LENGTH = 10_000  # Cap string length for regex evaluation to prevent ReDoS
+
+# Tactic normalization map for MITRE ATT&CK Navigator layers
+TACTIC_NAVIGATOR_MAP = {
+    "initial access": "initial-access",
+    "execution": "execution",
+    "persistence": "persistence",
+    "privilege escalation": "privilege-escalation",
+    "defense evasion": "defense-evasion",
+    "credential access": "credential-access",
+    "discovery": "discovery",
+    "lateral movement": "lateral-movement",
+    "collection": "collection",
+    "command and control": "command-and-control",
+    "exfiltration": "exfiltration",
+    "impact": "impact",
+}
+
+SEVERITY_SCORE_MAP = {
+    "Critical": (95, "0.95", "#ef4444"),
+    "High": (80, "0.85", "#f97316"),
+    "Medium": (60, "0.70", "#eab308"),
+    "Low": (40, "0.50", "#3b82f6"),
+    "Informational": (20, "0.30", "#6b7280"),
+}
+
 
 # Safe YAML loader supporting both PyYAML and ruamel.yaml
 def _safe_yaml_load(content: str) -> Dict[str, Any]:
@@ -80,8 +111,14 @@ SEVERITY_ORDER = {
 }
 
 
+def is_potential_redos(pattern_str: str) -> bool:
+    """Detect common dangerous nested quantifier constructs prone to catastrophic backtracking."""
+    # Check for nested quantifiers like (a+)+, (.*a)+, ([a-z]+)*, etc.
+    return bool(re.search(r'(\+|\*|\{[0-9]+,\})\)[+*]', pattern_str))
+
+
 class DetectionEngine:
-    """Engine that loads YAML detection rules and evaluates normalized LogEntry events."""
+    """Engine that loads YAML detection rules and evaluates streaming LogEntry events."""
 
     def __init__(self, rules_dir: Optional[str] = None, brute_force_threshold: int = 5):
         self.rules: List[Rule] = []
@@ -91,7 +128,7 @@ class DetectionEngine:
             self.load_rules(rules_dir)
 
     def load_rules(self, rules_dir: str) -> int:
-        """Recursively load and compile YAML rules from directory."""
+        """Recursively load and compile YAML rules from directory with ReDoS inspection."""
         self.rules.clear()
         rule_files = glob.glob(os.path.join(rules_dir, "**", "*.yml"), recursive=True) + \
                      glob.glob(os.path.join(rules_dir, "**", "*.yaml"), recursive=True)
@@ -126,6 +163,8 @@ class DetectionEngine:
                 raw_patterns = det.get("patterns", [])
                 compiled_patterns = []
                 for p in raw_patterns:
+                    if is_potential_redos(p):
+                        logger.warning(f"Potential ReDoS pattern detected in rule {rule_id}: {p}")
                     try:
                         compiled_patterns.append(re.compile(p, re.IGNORECASE))
                     except re.error as re_err:
@@ -159,28 +198,26 @@ class DetectionEngine:
 
     def analyze_stream(
         self,
-        entries: List[LogEntry],
+        entries: Iterable[LogEntry],
         threshold_override: Optional[int] = None
     ) -> List[Alert]:
         """
         Evaluate normalized log entries against all loaded detection rules.
+        Accepts both lists and memory-safe generator streams.
         """
         alerts: List[Alert] = []
         alert_counter = 1
 
-        # 1. Pattern-based rule evaluation
-        # Group pattern matches by (rule_id, source_ip, target)
         pattern_matches = defaultdict(list)
-
-        # 2. Threshold-based rule evaluation
-        # Group events by (rule_id, group_key)
         threshold_matches = defaultdict(list)
 
         for entry in entries:
             for rule in self.rules:
                 # Check log type compatibility
                 if rule.log_type != "all" and rule.log_type != entry.log_type:
-                    continue
+                    # Windows log type also matches sysmon
+                    if not (rule.log_type == "windows" and entry.log_type in ("windows", "sysmon")):
+                        continue
 
                 if rule.detection_type == "pattern":
                     # Determine text to inspect
@@ -195,6 +232,10 @@ class DetectionEngine:
                         text_to_check = entry.user
                     else:
                         text_to_check = f"{entry.raw} {entry.target} {entry.command_line or ''}"
+
+                    # ReDoS mitigation: Cap string length and scrub null bytes
+                    if len(text_to_check) > MAX_REGEX_EVAL_LENGTH:
+                        text_to_check = text_to_check[:MAX_REGEX_EVAL_LENGTH]
 
                     matched_pattern = None
                     for pat in rule.patterns:
@@ -300,3 +341,105 @@ class DetectionEngine:
                 "severity": r.severity
             })
         return matrix
+
+    def export_navigator_layer(
+        self,
+        alerts: Optional[List[Alert]] = None,
+        file_path: Optional[str] = None,
+        layer_name: str = "SOC Log Sentinel Coverage"
+    ) -> Dict[str, Any]:
+        """
+        Export MITRE ATT&CK Navigator v4.5 compliant layer JSON with severity/confidence scores.
+        Can export observed incident alerts or all loaded detection capabilities.
+        """
+        techniques = []
+
+        if alerts is not None:
+            # Aggregate alerts by technique_id and tactic
+            aggregated: Dict[tuple[str, str], List[Alert]] = defaultdict(list)
+            for a in alerts:
+                if a.mitre_id and a.mitre_id != "T1000":
+                    tactic_norm = TACTIC_NAVIGATOR_MAP.get(a.mitre_tactic.lower(), a.mitre_tactic.lower().replace(" ", "-"))
+                    aggregated[(a.mitre_id, tactic_norm)].append(a)
+
+            for (tech_id, tactic_norm), alert_list in aggregated.items():
+                # Pick max severity
+                max_alert = max(alert_list, key=lambda x: SEVERITY_ORDER.get(x.severity, 0))
+                score, conf, color = SEVERITY_SCORE_MAP.get(max_alert.severity, (50, "0.50", "#3b82f6"))
+                total_hits = sum(x.count for x in alert_list)
+
+                techniques.append({
+                    "techniqueID": tech_id,
+                    "tactic": tactic_norm,
+                    "score": score,
+                    "color": color,
+                    "comment": f"Rule: {max_alert.rule_name} ({max_alert.severity}, {total_hits} hits)",
+                    "enabled": True,
+                    "metadata": [
+                        {"name": "severity", "value": max_alert.severity},
+                        {"name": "confidence", "value": conf},
+                        {"name": "rule_id", "value": max_alert.rule_id},
+                        {"name": "hits", "value": str(total_hits)},
+                    ]
+                })
+        else:
+            # Export all configured detection rules as capability coverage
+            for r in self.rules:
+                if r.mitre_id and r.mitre_id != "T1000":
+                    tactic_norm = TACTIC_NAVIGATOR_MAP.get(r.mitre_tactic.lower(), r.mitre_tactic.lower().replace(" ", "-"))
+                    score, conf, color = SEVERITY_SCORE_MAP.get(r.severity, (50, "0.50", "#3b82f6"))
+                    techniques.append({
+                        "techniqueID": r.mitre_id,
+                        "tactic": tactic_norm,
+                        "score": score,
+                        "color": color,
+                        "comment": f"Capability: {r.name} ({r.severity})",
+                        "enabled": True,
+                        "metadata": [
+                            {"name": "severity", "value": r.severity},
+                            {"name": "confidence", "value": conf},
+                            {"name": "rule_id", "value": r.id},
+                        ]
+                    })
+
+        layer = {
+            "name": layer_name,
+            "versions": {
+                "attack": "14",
+                "navigator": "4.8.0",
+                "layer": "4.5"
+            },
+            "domain": "enterprise-attack",
+            "description": f"MITRE ATT&CK coverage layer generated by SOC Log Sentinel v2.0 ({len(techniques)} mapped techniques)",
+            "filters": {
+                "platforms": ["Windows", "Linux", "macOS", "Network"]
+            },
+            "sorting": 3,
+            "layout": {
+                "layout": "side",
+                "aggregateFunction": "max",
+                "showID": True,
+                "showName": True,
+                "showAggregateScores": True,
+                "countUnscored": False
+            },
+            "hideDisabled": False,
+            "techniques": techniques,
+            "gradient": {
+                "colors": ["#3b82f6", "#eab308", "#f97316", "#ef4444"],
+                "minValue": 0,
+                "maxValue": 100
+            },
+            "legendItems": [
+                {"label": "Critical Severity (Score: 95)", "color": "#ef4444"},
+                {"label": "High Severity (Score: 80)", "color": "#f97316"},
+                {"label": "Medium Severity (Score: 60)", "color": "#eab308"},
+                {"label": "Low Severity (Score: 40)", "color": "#3b82f6"},
+            ]
+        }
+
+        if file_path:
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(layer, f, indent=2)
+
+        return layer

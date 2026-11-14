@@ -3,7 +3,6 @@ report.py - Multi-Channel Security Reporting & Visualization Engine
 Renders sleek, color-coded terminal tables via Rich, and exports SIEM-ingestible JSON and Markdown reports.
 """
 
-import os
 import json
 from datetime import datetime
 from typing import List, Dict, Any, Optional
@@ -172,6 +171,18 @@ class IncidentReporter:
         console.print()
 
     @staticmethod
+    def generate_navigator_layer(
+        alerts: List[Alert],
+        file_path: Optional[str] = None,
+        layer_name: str = "SOC Log Sentinel Incidents"
+    ) -> str:
+        """Export MITRE ATT&CK Navigator v4.5 layer JSON for incident alerts."""
+        from .engine import DetectionEngine
+        engine = DetectionEngine()
+        layer_dict = engine.export_navigator_layer(alerts=alerts, file_path=file_path, layer_name=layer_name)
+        return json.dumps(layer_dict, indent=2)
+
+    @staticmethod
     def generate_json_report(
         alerts: List[Alert],
         metadata: Dict[str, Any],
@@ -251,7 +262,7 @@ class IncidentReporter:
                 f"- **Event Count:** {a.count}",
                 f"- **Observed Timestamp:** {a.timestamp}",
                 f"- **Description:** {a.description}",
-                f"- **Evidence Payload:**",
+                "- **Evidence Payload:**",
                 "```text",
                 a.evidence,
                 "```",

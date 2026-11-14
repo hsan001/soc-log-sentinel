@@ -28,7 +28,7 @@ def test_cli_sample_auth_evaluation():
     base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     auth_log = os.path.join(base, "samples", "auth.log")
     rules_dir = os.path.join(base, "rules")
-    
+
     result = main(["--file", auth_log, "--rules", rules_dir, "--quiet"])
     assert result == 0
 
